@@ -5,9 +5,230 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Crystals – UK</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       CRYSTAL BUTTON GRID
+       ============================================= */
+    .crystal-btn-section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 4rem 6rem;
+      background:
+        repeating-linear-gradient(100deg, transparent, transparent 3px, rgba(92,61,34,0.04) 3px, rgba(92,61,34,0.04) 4px),
+        linear-gradient(170deg, #ede4d6 0%, #e4d8c5 40%, #eae0d0 70%, #e6dac8 100%);
+      box-shadow: inset 0 4px 15px rgba(59,42,26,0.08);
+    }
+
+    .crystal-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.8rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .crystal-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 280px;
+      border: none;
+      cursor: pointer;
+      overflow: hidden;
+      text-decoration: none;
+      background: #2a1e14;
+      padding: 0;
+      border-bottom: 5px solid rgba(59,42,26,0.5);
+      box-shadow: 0 6px 24px rgba(59,42,26,0.22), 0 2px 8px rgba(59,42,26,0.12);
+      transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.4s;
+      opacity: 0;
+      animation: crystalBtnIn 0.6s ease forwards;
+    }
+
+    .crystal-btn:nth-child(1) { animation-delay: 0.10s; }
+    .crystal-btn:nth-child(2) { animation-delay: 0.18s; }
+    .crystal-btn:nth-child(3) { animation-delay: 0.26s; }
+    .crystal-btn:nth-child(4) { animation-delay: 0.34s; }
+    .crystal-btn:nth-child(5) { animation-delay: 0.42s; }
+    .crystal-btn:nth-child(6) { animation-delay: 0.50s; }
+    .crystal-btn:nth-child(7) { animation-delay: 0.58s; }
+    .crystal-btn:nth-child(8) { animation-delay: 0.66s; }
+
+    @keyframes crystalBtnIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .crystal-btn:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 22px 55px rgba(59,42,26,0.3), 0 6px 16px rgba(59,42,26,0.18);
+    }
+
+    /* Photo fills button */
+    .crystal-btn-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+      display: block;
+      z-index: 0;
+    }
+
+    .crystal-btn:hover .crystal-btn-bg {
+      transform: scale(1.09);
+    }
+
+    /* Colour fallback if image fails */
+    .crystal-btn-fallback {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* Gradient overlay for legibility */
+    .crystal-btn-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(12,7,3,0.05) 0%,
+        rgba(12,7,3,0.1)  30%,
+        rgba(12,7,3,0.6)  68%,
+        rgba(12,7,3,0.88) 100%
+      );
+      transition: background 0.35s;
+    }
+
+    .crystal-btn:hover .crystal-btn-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(12,7,3,0.12) 0%,
+        rgba(12,7,3,0.18) 30%,
+        rgba(12,7,3,0.68) 68%,
+        rgba(12,7,3,0.92) 100%
+      );
+    }
+
+    /* Gold shimmer on hover */
+    .crystal-btn-shimmer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: linear-gradient(
+        135deg,
+        rgba(196,151,62,0) 0%,
+        rgba(196,151,62,0.14) 50%,
+        rgba(196,151,62,0) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .crystal-btn:hover .crystal-btn-shimmer {
+      opacity: 1;
+    }
+
+    /* Gold border glow on hover */
+    .crystal-btn-border {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border: 1px solid rgba(196,151,62,0);
+      transition: border-color 0.35s;
+    }
+
+    .crystal-btn:hover .crystal-btn-border {
+      border-color: rgba(196,151,62,0.45);
+    }
+
+    /* Text layer */
+    .crystal-btn-inner {
+      position: relative;
+      z-index: 3;
+      padding: 0 1.1rem 1.3rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .crystal-btn-symbol {
+      display: block;
+      font-size: 2.2rem;
+      margin-bottom: 0.35rem;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+      transition: transform 0.35s, filter 0.35s;
+    }
+
+    .crystal-btn:hover .crystal-btn-symbol {
+      transform: scale(1.18) translateY(-3px);
+      filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    }
+
+    .crystal-btn-name {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #f5ead8;
+      letter-spacing: 0.04em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+      margin-bottom: 0.2rem;
+      transition: color 0.3s;
+    }
+
+    .crystal-btn:hover .crystal-btn-name {
+      color: var(--gold-light);
+    }
+
+    .crystal-btn-price {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.16em;
+      color: rgba(226,191,120,0.75);
+    }
+
+    /* "Discover" pill appears on hover */
+    .crystal-btn-cta {
+      display: inline-block;
+      margin-top: 0.55rem;
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(196,151,62,0.55);
+      padding: 0.28rem 0.8rem;
+      opacity: 0;
+      transform: translateY(7px);
+      transition: opacity 0.3s 0.05s, transform 0.3s 0.05s;
+      background: rgba(20,12,5,0.35);
+    }
+
+    .crystal-btn:hover .crystal-btn-cta {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1000px) {
+      .crystal-btn-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .crystal-btn-grid { grid-template-columns: 1fr; }
+      .crystal-btn { height: 200px; }
+      .crystal-btn-section { padding: 2.5rem 1.5rem 3.5rem; }
+    }
+  </style>
 </head>
 <body>
+
   <div class="bg-scene">
     <div class="bg-crystal bgc-1"></div>
     <div class="bg-crystal bgc-2"></div>
@@ -17,7 +238,7 @@
     <div class="bg-crystal bgc-6"></div>
   </div>
 
-  <!-- NAV -->
+  <!-- ── NAV ── -->
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
       <span class="logo-icon">✦</span>
@@ -35,7 +256,7 @@
     </a>
   </nav>
 
-  <!-- HERO -->
+  <!-- ── HERO ── -->
   <section class="hero">
     <div class="hero-content">
       <p class="hero-eyebrow">Hand-sourced &amp; ethically curated</p>
@@ -58,7 +279,20 @@
 
   <div class="wood-divider"></div>
 
-  <!-- WHY US -->
+  <!-- ── CRYSTAL BUTTON GRID ── -->
+  <section class="crystal-btn-section">
+    <div class="section-header">
+      <h2>Discover Our Crystals</h2>
+      <p>Tap any crystal to learn its story, healing properties and energy</p>
+    </div>
+    <div class="crystal-btn-grid" id="crystalBtnGrid">
+      <!-- Injected by script below -->
+    </div>
+  </section>
+
+  <div class="wood-divider"></div>
+
+  <!-- ── WHY US ── -->
   <section class="featured">
     <div class="section-header">
       <h2>Why Aura Crystals?</h2>
@@ -90,7 +324,7 @@
 
   <div class="wood-divider"></div>
 
-  <!-- SHOP PREVIEW -->
+  <!-- ── SHOP PREVIEW ── -->
   <section class="shop-preview wood-section">
     <div class="section-header">
       <h2>Our Crystals</h2>
@@ -102,16 +336,16 @@
     </div>
   </section>
 
-  <!-- SIGNUP BANNER -->
+  <!-- ── SIGNUP BANNER ── -->
   <section class="signup-banner">
     <div class="signup-banner-inner">
-      <h2>Join the Aurora Family ✦</h2>
+      <h2>Join the Aura Family ✦</h2>
       <p>Sign up for exclusive deals, crystal guides and early access to new arrivals.</p>
       <a href="signup.html" class="btn-primary">Create Your Account</a>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- ── FOOTER ── -->
   <footer class="footer">
     <div class="footer-links">
       <a href="shop.html">Shop</a>
@@ -126,9 +360,46 @@
     <p class="footer-small">© 2025 Aura Crystals UK. All rights reserved.</p>
   </footer>
 
-  <!-- FIX: Toast added to index.html so it works when adding from homepage -->
   <div class="toast" id="toast">Added to basket ✦</div>
 
   <script src="script.js"></script>
+  <script>
+    // Build crystal button grid from crystalDetails (defined in script.js)
+    document.addEventListener("DOMContentLoaded", () => {
+      const grid = document.getElementById("crystalBtnGrid");
+      if (!grid || typeof crystalDetails === "undefined") return;
+
+      crystalDetails.forEach(crystal => {
+        const a = document.createElement("a");
+        a.href = `crystal.html?id=${crystal.id}`;
+        a.className = "crystal-btn";
+        a.setAttribute("aria-label", `Discover ${crystal.name} — £${crystal.price.toFixed(2)}`);
+
+        a.innerHTML = `
+          <img
+            class="crystal-btn-bg"
+            src="${crystal.image}"
+            alt="${crystal.name}"
+            loading="lazy"
+            onerror="this.style.display='none'"
+          />
+          <div class="crystal-btn-fallback"
+               style="background: linear-gradient(145deg, ${crystal.color}22 0%, ${crystal.color}66 100%);">
+          </div>
+          <div class="crystal-btn-overlay"></div>
+          <div class="crystal-btn-shimmer"></div>
+          <div class="crystal-btn-border"></div>
+          <div class="crystal-btn-inner">
+            <span class="crystal-btn-symbol" style="color:${crystal.color}">${crystal.icon}</span>
+            <span class="crystal-btn-name">${crystal.name}</span>
+            <span class="crystal-btn-price">£${crystal.price.toFixed(2)}</span>
+            <span class="crystal-btn-cta">Discover ✦</span>
+          </div>
+        `;
+
+        grid.appendChild(a);
+      });
+    });
+  </script>
 </body>
 </html>
