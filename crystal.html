@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crystal – Aurora Crystals UK</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Crystal Detail Page ── */
+
+    .crystal-detail-page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
+
+    /* Full-bleed hero with the crystal image */
+    .crystal-hero {
+      position: relative;
+      height: 70vh;
+      min-height: 480px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .crystal-hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 8s ease;
+    }
+
+    .crystal-hero:hover .crystal-hero-img {
+      transform: scale(1.04);
+    }
+
+    /* Gradient overlay so text stays readable */
+    .crystal-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(30,18,8,0.15) 0%,
+          rgba(30,18,8,0.1) 40%,
+          rgba(30,18,8,0.75) 75%,
+          rgba(30,18,8,0.95) 100%
+        );
+    }
+
+    .crystal-hero-text {
+      position: relative;
+      z-index: 2;
+      padding: 0 5rem 3.5rem;
+      width: 100%;
+    }
+
+    .crystal-hero-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 0.7rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.2s;
+    }
+
+    .crystal-hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 300;
+      color: #f5ead8;
+      line-height: 1.0;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+
+    .crystal-hero-tagline {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      font-weight: 300;
+      color: var(--gold-light);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+
+    /* ── Content section below hero ── */
+    .crystal-content {
+      background:
+        repeating-linear-gradient(
+          100deg,
+          transparent,
+          transparent 3px,
+          rgba(92,61,34,0.035) 3px,
+          rgba(92,61,34,0.035) 4px
+        ),
+        linear-gradient(170deg, #ede4d6 0%, #e4d8c5 40%, #eae0d0 70%, #e6dac8 100%);
+      padding: 4rem 5rem 6rem;
+    }
+
+    .crystal-content-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    /* Left: description text */
+    .crystal-desc-section {}
+
+    .crystal-lore-block {
+      margin-bottom: 2.5rem;
+      padding: 2rem 2.5rem;
+      background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(250,244,235,0.7));
+      border-left: 3px solid var(--gold);
+      box-shadow: 0 2px 16px rgba(59,42,26,0.08);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .crystal-lore-block.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .crystal-lore-block h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--deep);
+      margin-bottom: 0.8rem;
+    }
+
+    .crystal-lore-block p {
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--stone);
+    }
+
+    /* Properties pills */
+    .crystal-props {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .crystal-prop {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--wood-mid);
+      border: 1px solid rgba(196,151,62,0.45);
+      padding: 0.3rem 0.85rem;
+      background: rgba(196,151,62,0.07);
+    }
+
+    /* Right: buy card */
+    .crystal-buy-card {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(196,151,62,0.22);
+      border-top: 4px solid var(--gold);
+      padding: 2.2rem;
+      box-shadow: 0 8px 35px rgba(59,42,26,0.12);
+      position: sticky;
+      top: 100px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+    }
+
+    .crystal-buy-card.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .buy-card-icon {
+      font-size: 4.5rem;
+      display: block;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      animation: float 5s ease-in-out infinite;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
+    }
+
+    .buy-card-name {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--deep);
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+
+    .buy-card-price {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 1.6rem;
+    }
+
+    .buy-card-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blush), transparent);
+      margin-bottom: 1.6rem;
+    }
+
+    .buy-card-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--stone);
+      margin-bottom: 0.6rem;
+    }
+
+    .buy-card-detail span:first-child {
+      color: var(--gold);
+      font-size: 0.9rem;
+    }
+
+    .buy-card-actions {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .buy-card-actions .btn-primary,
+    .buy-card-actions .btn-secondary {
+      width: 100%;
+      text-align: center;
+      display: block;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--stone);
+      text-decoration: none;
+      margin-bottom: 2.5rem;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+    .back-link::before { content: '←'; font-size: 1rem; }
+
+    /* Not found state */
+    .crystal-not-found {
+      text-align: center;
+      padding: 10rem 2rem;
+    }
+
+    .crystal-not-found h2 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--deep);
+      margin-bottom: 1rem;
+    }
+
+    .crystal-not-found p {
+      font-size: 0.9rem;
+      color: var(--stone);
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .crystal-hero-text { padding: 0 1.5rem 2.5rem; }
+      .crystal-content { padding: 2.5rem 1.5rem 4rem; }
+      .crystal-content-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .crystal-buy-card { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-scene">
+    <div class="bg-crystal bgc-1"></div>
+    <div class="bg-crystal bgc-2"></div>
+    <div class="bg-crystal bgc-3"></div>
+    <div class="bg-crystal bgc-4"></div>
+    <div class="bg-crystal bgc-5"></div>
+    <div class="bg-crystal bgc-6"></div>
+  </div>
+
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
+    </ul>
+    <a href="cart.html" class="nav-cart">
+      <span class="cart-icon">◇</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </a>
+  </nav>
+
+  <div class="crystal-detail-page" id="crystalDetailPage">
+    <!-- Populated by script -->
+  </div>
+
+  <div class="toast" id="toast">Added to basket ✦</div>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="signup.html">Sign Up</a>
+    </div>
+    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
+    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const id     = parseInt(params.get("id"));
+      const page   = document.getElementById("crystalDetailPage");
+
+      const product = crystalDetails.find(p => p.id === id);
+
+      if (!product) {
+        page.innerHTML = `
+          <div class="crystal-not-found">
+            <h2>Crystal not found</h2>
+            <p>We couldn't find that crystal. It may have moved or sold out.</p>
+            <a href="shop.html" class="btn-primary">Browse the Collection</a>
+          </div>`;
+        return;
+      }
+
+      // Update page title
+      document.title = `${product.name} – Aurora Crystals UK`;
+
+      page.innerHTML = `
+        <div class="crystal-hero">
+          <img
+            class="crystal-hero-img"
+            src="${product.image}"
+            alt="${product.name}"
+            onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(145deg, #2a1e14, #4a3320)'"
+          />
+          <div class="crystal-hero-text">
+            <p class="crystal-hero-eyebrow">Aurora Crystals UK &nbsp;✦&nbsp; Hand Selected</p>
+            <h1 class="crystal-hero-name">${product.name}</h1>
+            <p class="crystal-hero-tagline">${product.tagline}</p>
+          </div>
+        </div>
+
+        <div class="crystal-content">
+          <div class="crystal-content-inner">
+
+            <div class="crystal-desc-section">
+              <a href="shop.html" class="back-link">Back to Collection</a>
+
+              <div class="crystal-lore-block">
+                <h3>About This Crystal</h3>
+                <p>${product.about}</p>
+              </div>
+
+              <div class="crystal-lore-block">
+                <h3>Healing &amp; Energy</h3>
+                <p>${product.healing}</p>
+              </div>
+
+              <div class="crystal-lore-block">
+                <h3>History &amp; Origins</h3>
+                <p>${product.history}</p>
+              </div>
+
+              <div class="crystal-lore-block">
+                <h3>How to Use</h3>
+                <p>${product.howToUse}</p>
+                <div class="crystal-props">
+                  ${product.properties.map(p => `<span class="crystal-prop">${p}</span>`).join("")}
+                </div>
+              </div>
+            </div>
+
+            <div class="crystal-buy-card" id="buyCard">
+              <span class="buy-card-icon" style="color:${product.color}">${product.icon}</span>
+              <p class="buy-card-name">${product.name}</p>
+              <p class="buy-card-price">£${product.price.toFixed(2)}</p>
+              <div class="buy-card-divider"></div>
+              <div class="buy-card-detail"><span>◆</span> Ethically hand-sourced</div>
+              <div class="buy-card-detail"><span>◈</span> UK based — fast delivery</div>
+              <div class="buy-card-detail"><span>◇</span> Each piece is unique</div>
+              <div class="buy-card-detail"><span>✦</span> Cleansed before dispatch</div>
+              <div class="buy-card-actions">
+                <button class="btn-primary" onclick="addToCart(${product.id})">Add to Basket ✦</button>
+                <a href="shop.html" class="btn-secondary">Continue Shopping</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      // Scroll reveal
+      setTimeout(() => {
+        document.querySelectorAll(".crystal-lore-block, #buyCard").forEach((el, i) => {
+          setTimeout(() => el.classList.add("revealed"), i * 120);
+        });
+      }, 200);
+    });
+  </script>
+</body>
+</html>

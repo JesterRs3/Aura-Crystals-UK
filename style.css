@@ -1426,3 +1426,15 @@
      .form-row { grid-template-columns: 1fr; }
      .featured { padding: 3rem 1.5rem; }
    }
+
+/* Product card link wrapper */
+.product-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.product-card-link:hover .product-name {
+  color: var(--accent);
+  transition: color 0.3s;
+}
