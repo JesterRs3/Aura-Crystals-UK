@@ -1,324 +1,9 @@
-// =============================================
-//  AURORA CRYSTALS UK — script.js
-// =============================================
-
-// --- PRODUCT DATA ---
-const products = [
-    { id:1, name:"Amethyst Cluster",    desc:"Promotes calm, clarity and spiritual protection.", price:14.99, icon:"◆", color:"#9b7fbf" },
-    { id:2, name:"Rose Quartz",          desc:"The stone of unconditional love and gentle healing.", price:9.99,  icon:"◈", color:"#e8a0a0" },
-    { id:3, name:"Clear Quartz",         desc:"Master healer. Amplifies energy and intention.", price:11.99, icon:"◇", color:"#c0d8e8" },
-    { id:4, name:"Black Tourmaline",     desc:"Powerful protection against negative energies.", price:12.99, icon:"✦", color:"#5a5a5a" },
-    { id:5, name:"Citrine",              desc:"Stone of abundance, joy and positive energy.", price:13.99, icon:"◉", color:"#d4a843" },
-    { id:6, name:"Selenite Wand",        desc:"Cleanses auras and charges other crystals.", price:10.99, icon:"⟡", color:"#d0c8b8" },
-    { id:7, name:"Lapis Lazuli",         desc:"Enhances wisdom, truth and inner power.", price:15.99, icon:"◐", color:"#3a6ea5" },
-    { id:8, name:"Tiger's Eye",          desc:"Courage, confidence and grounding energy.", price:11.49, icon:"◑", color:"#b07c3a" },
-  ];
-  
-  // =============================================
-  //  CART — stored in sessionStorage so it
-  //  persists between pages during a visit.
-  // =============================================
-  
-  function getCart() {
-    try {
-      return JSON.parse(sessionStorage.getItem("aurora_cart")) || [];
-    } catch(e) {
-      return [];
-    }
-  }
-  
-  function saveCart(cart) {
-    sessionStorage.setItem("aurora_cart", JSON.stringify(cart));
-  }
-  
-  function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-    const cart = getCart();
-    const existing = cart.find(i => i.id === productId);
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({ ...product, qty: 1 });
-    }
-    saveCart(cart);
-    updateCartCount();
-    showToast();
-  }
-  
-  function removeFromCart(productId) {
-    let cart = getCart().filter(i => i.id !== productId);
-    saveCart(cart);
-    updateCartCount();
-    renderCartPage();
-  }
-  
-  function changeQty(productId, delta) {
-    const cart = getCart();
-    const item = cart.find(i => i.id === productId);
-    if (!item) return;
-    item.qty += delta;
-    if (item.qty <= 0) {
-      saveCart(cart.filter(i => i.id !== productId));
-    } else {
-      saveCart(cart);
-    }
-    updateCartCount();
-    renderCartPage();
-  }
-  
-  function updateCartCount() {
-    const el = document.getElementById("cartCount");
-    if (!el) return;
-    const total = getCart().reduce((s, i) => s + i.qty, 0);
-    el.textContent = total;
-  }
-  
-  // =============================================
-  //  TOAST NOTIFICATION
-  // =============================================
-  function showToast() {
-    const toast = document.getElementById("toast");
-    if (!toast) return;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 2500);
-  }
-  
-  // =============================================
-  //  RENDER PRODUCTS (homepage preview + shop)
-  // =============================================
-  function renderProducts() {
-    const grid = document.getElementById("productGrid");
-    if (!grid) return;
-  
-    const isShopPage = window.location.pathname.includes("shop.html");
-    const list = isShopPage ? products : products.slice(0, 4);
-  
-    grid.innerHTML = "";
-    list.forEach((product, index) => {
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.style.opacity = "0";
-      card.style.transform = "translateY(30px)";
-      card.style.transition = `opacity 0.5s ease ${index * 0.08}s, transform 0.5s ease ${index * 0.08}s`;
-      card.innerHTML = `
-        <span class="product-icon" style="color:${product.color}">${product.icon}</span>
-        <h3 class="product-name">${product.name}</h3>
-        <p class="product-desc">${product.desc}</p>
-        <p class="product-price">£${product.price.toFixed(2)}</p>
-        <button class="btn-add" onclick="addToCart(${product.id})">Add to Basket</button>
-      `;
-      grid.appendChild(card);
-  
-      // trigger animation
-      setTimeout(() => {
-        card.style.opacity = "1";
-        card.style.transform = "translateY(0)";
-      }, 100 + index * 80);
-    });
-  }
-  
-  // =============================================
-  //  RENDER CART PAGE
-  // =============================================
-  function renderCartPage() {
-    const container = document.getElementById("cartPageItems");
-    const summaryEl  = document.getElementById("orderSummary");
-    const summaryLines = document.getElementById("summaryLines");
-    const summaryTotal = document.getElementById("summaryTotal");
-    if (!container) return;
-  
-    const cart = getCart();
-  
-    if (cart.length === 0) {
-      container.innerHTML = `<p class="cart-empty-msg">Your basket is empty. <a href="shop.html">Continue shopping →</a></p>`;
-      if (summaryEl) summaryEl.style.display = "none";
-      return;
-    }
-  
-    container.innerHTML = cart.map(item => `
-      <div class="cart-page-item">
-        <span class="cart-page-icon" style="color:${item.color}">${item.icon}</span>
-        <div>
-          <p class="cart-page-name">${item.name}</p>
-          <p class="cart-page-desc">${item.desc}</p>
-        </div>
-        <div class="cart-page-qty">
-          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
-          <span class="qty-num">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-        </div>
-        <span class="cart-page-price">£${(item.price * item.qty).toFixed(2)}</span>
-        <button class="cart-page-remove" onclick="removeFromCart(${item.id})">✕</button>
-      </div>
-    `).join("");
-  
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  
-    if (summaryEl) summaryEl.style.display = "block";
-    if (summaryLines) {
-      summaryLines.innerHTML = cart.map(i => `
-        <div class="summary-row">
-          <span>${i.name} × ${i.qty}</span>
-          <span>£${(i.price * i.qty).toFixed(2)}</span>
-        </div>
-      `).join("");
-    }
-    if (summaryTotal) summaryTotal.textContent = `£${total.toFixed(2)}`;
-  }
-  
-  // =============================================
-  //  SIMULATE CHECKOUT
-  //  Replace this function with real Stripe
-  //  Payment Intent logic once you have a backend.
-  // =============================================
-  function simulateCheckout() {
-    const first = document.getElementById("delivFirst");
-    const last  = document.getElementById("delivLast");
-    const email = document.getElementById("delivEmail");
-    const addr1 = document.getElementById("delivAddr1");
-    const city  = document.getElementById("delivCity");
-    const post  = document.getElementById("delivPostcode");
-  
-    if (!first?.value || !last?.value || !email?.value || !addr1?.value || !city?.value || !post?.value) {
-      alert("Please fill in all delivery details before completing your order.");
-      return;
-    }
-  
-    if (getCart().length === 0) {
-      alert("Your basket is empty!");
-      return;
-    }
-  
-    // Clear cart on success
-    saveCart([]);
-    updateCartCount();
-  
-    // Show success screen
-    const successEl = document.getElementById("orderSuccess");
-    if (successEl) successEl.classList.remove("hidden");
-  }
-  
-  // =============================================
-  //  CONTACT FORM
-  // =============================================
-  function initContactForm() {
-    const form = document.getElementById("contactForm");
-    if (!form) return;
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const confirm = document.getElementById("formConfirm");
-      const first = document.getElementById("contactFirst")?.value || "";
-      // Basic validation
-      if (confirm) {
-        confirm.textContent = `Thank you${first ? ", " + first : ""}! We'll be in touch soon. ✦`;
-        confirm.style.color = "var(--accent)";
-      }
-      form.reset();
-    });
-  }
-  
-  // =============================================
-  //  SIGNUP / LOGIN FORMS
-  // =============================================
-  function switchTab(tab) {
-    const formSignup = document.getElementById("formSignup");
-    const formLogin  = document.getElementById("formLogin");
-    const tabSignup  = document.getElementById("tabSignup");
-    const tabLogin   = document.getElementById("tabLogin");
-    if (!formSignup) return;
-  
-    if (tab === "signup") {
-      formSignup.classList.remove("hidden");
-      formLogin.classList.add("hidden");
-      tabSignup.classList.add("active");
-      tabLogin.classList.remove("active");
-    } else {
-      formLogin.classList.remove("hidden");
-      formSignup.classList.add("hidden");
-      tabLogin.classList.add("active");
-      tabSignup.classList.remove("active");
-    }
-  }
-  
-  function initSignupForms() {
-    const signupForm = document.getElementById("signupForm");
-    if (signupForm) {
-      signupForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        const pass    = document.getElementById("signupPassword")?.value;
-        const confirm = document.getElementById("signupConfirm")?.value;
-        const msg     = document.getElementById("signupConfirmMsg");
-        const first   = document.getElementById("signupFirst")?.value;
-  
-        if (pass !== confirm) {
-          if (msg) { msg.textContent = "Passwords do not match."; msg.style.color = "#c0392b"; }
-          return;
-        }
-        if (pass && pass.length < 8) {
-          if (msg) { msg.textContent = "Password must be at least 8 characters."; msg.style.color = "#c0392b"; }
-          return;
-        }
-        if (msg) {
-          msg.textContent = `Welcome to Aurora Crystals${first ? ", " + first : ""}! ✦ Check your email to confirm.`;
-          msg.style.color = "var(--accent)";
-        }
-        signupForm.reset();
-      });
-    }
-  
-    const loginForm = document.getElementById("loginForm");
-    if (loginForm) {
-      loginForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        const msg = document.getElementById("loginConfirmMsg");
-        if (msg) {
-          msg.textContent = "Welcome back! ✦";
-          msg.style.color = "var(--accent)";
-        }
-      });
-    }
-  }
-  
-  // =============================================
-  //  SCROLL REVEAL
-  // =============================================
-  function initScrollReveal() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = "1";
-          entry.target.style.transform = "translateY(0)";
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-  
-    document.querySelectorAll(".feature-card, .about-block, .contact-info, .contact-form-wrap, .auth-container, .about-badges").forEach(el => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(30px)";
-      el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
-      observer.observe(el);
-    });
-  }
-  
-  // =============================================
-  //  INIT
-  // =============================================
-  document.addEventListener("DOMContentLoaded", () => {
-    updateCartCount();
-    renderProducts();
-    renderCartPage();
-    initContactForm();
-    initSignupForms();
-    initScrollReveal();
-  });
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop – Aurora Crystals UK</title>
+  <title>Aurora Crystals – UK</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
@@ -331,15 +16,15 @@ const products = [
     <div class="bg-crystal bgc-5"></div>
     <div class="bg-crystal bgc-6"></div>
   </div>
-  <!-- FIX: Removed stray extra </div> that was here -->
 
+  <!-- NAV -->
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
       <span class="logo-icon">✦</span>
       <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="shop.html">Shop</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
@@ -350,645 +35,99 @@ const products = [
     </a>
   </nav>
 
-  <div class="page-hero">
-    <h1>The Collection</h1>
-    <p>Handpicked crystals — each one unique</p>
-  </div>
-
-  <section class="shop-full">
-    <div class="product-grid full" id="productGrid"></div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Hand-sourced &amp; ethically curated</p>
+      <h1 class="hero-title">Crystals that<br /><em>resonate</em> with you</h1>
+      <p class="hero-sub">Each stone is chosen with intention — for healing, beauty, and connection.</p>
+      <div class="hero-btns">
+        <a href="shop.html" class="btn-primary">Explore the Collection</a>
+        <a href="signup.html" class="btn-secondary">Join Our Community</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="crystal-display">
+        <div class="crystal c1">◆</div>
+        <div class="crystal c2">◈</div>
+        <div class="crystal c3">◇</div>
+        <div class="crystal c4">✦</div>
+      </div>
+    </div>
   </section>
 
+  <div class="wood-divider"></div>
+
+  <!-- WHY US -->
+  <section class="featured">
+    <div class="section-header">
+      <h2>Why Aurora Crystals?</h2>
+      <p>More than a shop — a community of crystal lovers</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">◆</span>
+        <h3>Ethically Sourced</h3>
+        <p>Every crystal is hand-selected and sourced responsibly from trusted suppliers.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">◈</span>
+        <h3>UK Based</h3>
+        <p>A small UK shop — fast delivery straight to your door.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">◇</span>
+        <h3>Secure Payments</h3>
+        <p>Pay safely via card or PayPal — fully encrypted checkout.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <h3>Crystal Guidance</h3>
+        <p>Not sure which crystal is for you? We're always here to help.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wood-divider"></div>
+
+  <!-- SHOP PREVIEW -->
+  <section class="shop-preview wood-section">
+    <div class="section-header">
+      <h2>Our Crystals</h2>
+      <p>Every piece is unique — just like you</p>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+    <div class="view-all-wrap">
+      <a href="shop.html" class="btn-primary">View Full Collection</a>
+    </div>
+  </section>
+
+  <!-- SIGNUP BANNER -->
+  <section class="signup-banner">
+    <div class="signup-banner-inner">
+      <h2>Join the Aurora Family ✦</h2>
+      <p>Sign up for exclusive deals, crystal guides and early access to new arrivals.</p>
+      <a href="signup.html" class="btn-primary">Create Your Account</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-links">
       <a href="shop.html">Shop</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
       <a href="signup.html">Sign Up</a>
+      <a href="cart.html">Basket</a>
     </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
+    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love &nbsp;·&nbsp;
+      <a href="#">TikTok Shop</a> &nbsp;·&nbsp; <a href="#">Etsy</a>
+    </p>
     <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
   </footer>
 
-  <!-- ADD TO CART TOAST -->
+  <!-- FIX: Toast added to index.html so it works when adding from homepage -->
   <div class="toast" id="toast">Added to basket ✦</div>
-
-  <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About – Aurora Crystals UK</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="bg-scene">
-    <div class="bg-crystal bgc-1"></div>
-    <div class="bg-crystal bgc-2"></div>
-    <div class="bg-crystal bgc-3"></div>
-    <div class="bg-crystal bgc-4"></div>
-    <div class="bg-crystal bgc-5"></div>
-    <div class="bg-crystal bgc-6"></div>
-  </div>
-  <!-- FIX: Removed stray extra </div> that was here -->
-
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html" class="active">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
-    </ul>
-    <a href="cart.html" class="nav-cart">
-      <span class="cart-icon">◇</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </a>
-  </nav>
-
-  <div class="page-hero">
-    <h1>About Us</h1>
-    <p>The story behind Aurora Crystals</p>
-  </div>
-
-  <section class="about-page">
-    <div class="about-page-inner">
-      <div class="about-block">
-        <h2>Who We Are</h2>
-        <p>Aurora Crystals UK is a small, passionate crystal shop based in the United Kingdom. We started because we believe that everyone deserves access to beautiful, ethically sourced crystals — without the high street markup.</p>
-        <p>Every single stone in our collection is personally hand-selected. We look at quality, energy, and beauty before anything reaches you.</p>
-      </div>
-
-      <div class="about-block">
-        <h2>Our Mission</h2>
-        <p>We're on a mission to make crystal healing accessible, affordable, and authentic. Whether you're searching for something to help with anxiety, to decorate your home, or simply because a crystal called to you — we've got you.</p>
-      </div>
-
-      <div class="about-block">
-        <h2>Ethically Sourced</h2>
-        <p>We only work with suppliers who share our values. We ask questions about where crystals come from, how they were mined, and who was involved. Because good energy starts at the source.</p>
-      </div>
-
-      <div class="about-badges">
-        <div class="badge">
-          <span>◆</span>
-          <p>Hand<br/>Selected</p>
-        </div>
-        <div class="badge">
-          <span>✦</span>
-          <p>Ethically<br/>Sourced</p>
-        </div>
-        <div class="badge">
-          <span>◇</span>
-          <p>UK<br/>Based</p>
-        </div>
-        <div class="badge">
-          <span>◈</span>
-          <p>Fast<br/>Delivery</p>
-        </div>
-      </div>
-
-      <div class="about-cta">
-        <a href="shop.html" class="btn-primary">Explore Our Collection</a>
-        <a href="contact.html" class="btn-secondary">Get in Touch</a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="signup.html">Sign Up</a>
-    </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact – Aurora Crystals UK</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="bg-scene">
-    <div class="bg-crystal bgc-1"></div>
-    <div class="bg-crystal bgc-2"></div>
-    <div class="bg-crystal bgc-3"></div>
-    <div class="bg-crystal bgc-4"></div>
-    <div class="bg-crystal bgc-5"></div>
-    <div class="bg-crystal bgc-6"></div>
-  </div>
-  <!-- FIX: Removed stray extra </div> that was here -->
-
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
-      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
-    </ul>
-    <a href="cart.html" class="nav-cart">
-      <span class="cart-icon">◇</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </a>
-  </nav>
-
-  <div class="page-hero">
-    <h1>Get in Touch</h1>
-    <p>We'd love to hear from you</p>
-  </div>
-
-  <section class="contact-page">
-    <div class="contact-page-inner">
-
-      <div class="contact-info">
-        <h2>Contact Us</h2>
-        <p>Have a question about a crystal, your order, or just want to say hello? Drop us a message and we'll get back to you as soon as possible.</p>
-
-        <div class="contact-details">
-          <div class="contact-detail-item">
-            <span class="detail-icon">◈</span>
-            <div>
-              <strong>Email</strong>
-              <p>hello@auroracrystalsuk.com</p>
-            </div>
-          </div>
-          <div class="contact-detail-item">
-            <span class="detail-icon">◆</span>
-            <div>
-              <strong>TikTok</strong>
-              <p>@AuroraCrystalsUK</p>
-            </div>
-          </div>
-          <div class="contact-detail-item">
-            <span class="detail-icon">◇</span>
-            <div>
-              <strong>Response Time</strong>
-              <p>Usually within 24 hours</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="contact-form-wrap">
-        <form class="contact-form" id="contactForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input type="text" id="contactFirst" placeholder="Jane" required />
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <input type="text" id="contactLast" placeholder="Smith" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="contactEmail" placeholder="jane@email.com" required />
-          </div>
-          <div class="form-group">
-            <label>Subject</label>
-            <select id="contactSubject">
-              <option value="">Select a topic...</option>
-              <option value="order">My Order</option>
-              <option value="product">Product Question</option>
-              <option value="wholesale">Wholesale Enquiry</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Message</label>
-            <textarea id="contactMessage" rows="5" placeholder="Your message..." required></textarea>
-          </div>
-          <button type="submit" class="btn-primary full-width">Send Message ✦</button>
-          <p class="form-confirm" id="formConfirm"></p>
-        </form>
-      </div>
-
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="signup.html">Sign Up</a>
-    </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact – Aurora Crystals UK</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="bg-scene">
-    <div class="bg-crystal bgc-1"></div>
-    <div class="bg-crystal bgc-2"></div>
-    <div class="bg-crystal bgc-3"></div>
-    <div class="bg-crystal bgc-4"></div>
-    <div class="bg-crystal bgc-5"></div>
-    <div class="bg-crystal bgc-6"></div>
-  </div>
-  <!-- FIX: Removed stray extra </div> that was here -->
-
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
-      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
-    </ul>
-    <a href="cart.html" class="nav-cart">
-      <span class="cart-icon">◇</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </a>
-  </nav>
-
-  <div class="page-hero">
-    <h1>Get in Touch</h1>
-    <p>We'd love to hear from you</p>
-  </div>
-
-  <section class="contact-page">
-    <div class="contact-page-inner">
-
-      <div class="contact-info">
-        <h2>Contact Us</h2>
-        <p>Have a question about a crystal, your order, or just want to say hello? Drop us a message and we'll get back to you as soon as possible.</p>
-
-        <div class="contact-details">
-          <div class="contact-detail-item">
-            <span class="detail-icon">◈</span>
-            <div>
-              <strong>Email</strong>
-              <p>hello@auroracrystalsuk.com</p>
-            </div>
-          </div>
-          <div class="contact-detail-item">
-            <span class="detail-icon">◆</span>
-            <div>
-              <strong>TikTok</strong>
-              <p>@AuroraCrystalsUK</p>
-            </div>
-          </div>
-          <div class="contact-detail-item">
-            <span class="detail-icon">◇</span>
-            <div>
-              <strong>Response Time</strong>
-              <p>Usually within 24 hours</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="contact-form-wrap">
-        <form class="contact-form" id="contactForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input type="text" id="contactFirst" placeholder="Jane" required />
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <input type="text" id="contactLast" placeholder="Smith" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="contactEmail" placeholder="jane@email.com" required />
-          </div>
-          <div class="form-group">
-            <label>Subject</label>
-            <select id="contactSubject">
-              <option value="">Select a topic...</option>
-              <option value="order">My Order</option>
-              <option value="product">Product Question</option>
-              <option value="wholesale">Wholesale Enquiry</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Message</label>
-            <textarea id="contactMessage" rows="5" placeholder="Your message..." required></textarea>
-          </div>
-          <button type="submit" class="btn-primary full-width">Send Message ✦</button>
-          <p class="form-confirm" id="formConfirm"></p>
-        </form>
-      </div>
-
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="signup.html">Sign Up</a>
-    </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign Up – Aurora Crystals UK</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="bg-scene">
-    <div class="bg-crystal bgc-1"></div>
-    <div class="bg-crystal bgc-2"></div>
-    <div class="bg-crystal bgc-3"></div>
-    <div class="bg-crystal bgc-4"></div>
-    <div class="bg-crystal bgc-5"></div>
-    <div class="bg-crystal bgc-6"></div>
-  </div>
-  <!-- FIX: Removed stray extra </div> that was here -->
-
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="signup.html" class="nav-highlight active">Sign Up</a></li>
-    </ul>
-    <a href="cart.html" class="nav-cart">
-      <span class="cart-icon">◇</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </a>
-  </nav>
-
-  <div class="page-hero">
-    <h1>Join the Aurora Family</h1>
-    <p>Create your account for exclusive access and deals</p>
-  </div>
-
-  <section class="signup-page">
-    <div class="auth-container">
-
-      <!-- TABS -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
-        <button class="auth-tab" id="tabLogin" onclick="switchTab('login')">Log In</button>
-      </div>
-
-      <!-- SIGNUP FORM -->
-      <div class="auth-form" id="formSignup">
-        <div class="auth-perks">
-          <span>✦ Exclusive member deals</span>
-          <span>✦ Early access to new arrivals</span>
-          <span>✦ Free crystal guide on sign up</span>
-        </div>
-        <form id="signupForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input type="text" id="signupFirst" placeholder="Jane" required />
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <input type="text" id="signupLast" placeholder="Smith" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="signupEmail" placeholder="jane@email.com" required />
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="signupPassword" placeholder="Min. 8 characters" required />
-          </div>
-          <div class="form-group">
-            <label>Confirm Password</label>
-            <input type="password" id="signupConfirm" placeholder="Repeat password" required />
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="signupNewsletter" checked />
-            <label for="signupNewsletter">Send me exclusive offers and crystal guides</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="signupTerms" required />
-            <label for="signupTerms">I agree to the <a href="#">Terms &amp; Conditions</a></label>
-          </div>
-          <button type="submit" class="btn-primary full-width">Create My Account ✦</button>
-          <p class="form-confirm" id="signupConfirmMsg"></p>
-        </form>
-      </div>
-
-      <!-- LOGIN FORM -->
-      <div class="auth-form hidden" id="formLogin">
-        <form id="loginForm">
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="loginEmail" placeholder="jane@email.com" required />
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="loginPassword" placeholder="Your password" required />
-          </div>
-          <button type="submit" class="btn-primary full-width">Log In</button>
-          <p class="form-confirm" id="loginConfirmMsg"></p>
-          <p class="auth-switch">Forgot your password? <a href="#">Reset it here</a></p>
-        </form>
-      </div>
-
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="signup.html">Sign Up</a>
-    </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basket – Aurora Crystals UK</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="bg-scene">
-    <div class="bg-crystal bgc-1"></div>
-    <div class="bg-crystal bgc-2"></div>
-    <div class="bg-crystal bgc-3"></div>
-    <div class="bg-crystal bgc-4"></div>
-    <div class="bg-crystal bgc-5"></div>
-    <div class="bg-crystal bgc-6"></div>
-  </div>
-
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
-    </ul>
-    <a href="cart.html" class="nav-cart active">
-      <span class="cart-icon">◇</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </a>
-  </nav>
-
-  <div class="page-hero">
-    <h1>Your Basket</h1>
-    <p>Review your crystals before checkout</p>
-  </div>
-
-  <section class="cart-page">
-    <div class="cart-page-inner">
-
-      <!-- CART ITEMS -->
-      <div id="cartPageItems">
-        <!-- Populated by script.js renderCartPage() -->
-      </div>
-
-      <!-- ORDER SUMMARY + CHECKOUT -->
-      <div class="order-summary" id="orderSummary" style="display:none;">
-        <h3>Order Summary</h3>
-        <div id="summaryLines">
-          <!-- Populated by script.js -->
-        </div>
-        <div class="summary-row summary-total">
-          <span>Total</span>
-          <span id="summaryTotal">£0.00</span>
-        </div>
-
-        <div class="checkout-section">
-          <h3>Delivery Details</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input type="text" id="delivFirst" placeholder="Jane" />
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <input type="text" id="delivLast" placeholder="Smith" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="delivEmail" placeholder="jane@email.com" />
-          </div>
-          <div class="form-group">
-            <label>Address Line 1</label>
-            <input type="text" id="delivAddr1" placeholder="12 Crystal Lane" />
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>City</label>
-              <input type="text" id="delivCity" placeholder="London" />
-            </div>
-            <div class="form-group">
-              <label>Postcode</label>
-              <input type="text" id="delivPostcode" placeholder="SW1A 1AA" />
-            </div>
-          </div>
-
-          <div class="payment-notice">
-            <p>This is a demo checkout. No real payment will be taken.</p>
-            <p class="payment-sub">Real payments can be wired up via Stripe or PayPal.</p>
-          </div>
-
-          <!-- FIX: Button wired to simulateCheckout() -->
-          <button class="btn-primary full-width checkout-btn" onclick="simulateCheckout()">
-            Complete Order ✦
-          </button>
-
-          <div class="payment-icons">
-            <span>VISA</span>
-            <span>MASTERCARD</span>
-            <span>PAYPAL</span>
-            <span>AMEX</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ORDER SUCCESS OVERLAY -->
-  <div class="order-success hidden" id="orderSuccess">
-    <div class="success-inner">
-      <span class="success-icon">✦</span>
-      <h2>Order Placed!</h2>
-      <p>Thank you for your order. We'll send your crystals with love and care. Check your email for confirmation.</p>
-      <a href="shop.html" class="btn-primary" style="opacity:1;animation:none;">Continue Shopping</a>
-    </div>
-  </div>
-
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="signup.html">Sign Up</a>
-    </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
-  </footer>
 
   <script src="script.js"></script>
 </body>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up – Aurora Crystals UK</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-scene">
+    <div class="bg-crystal bgc-1"></div>
+    <div class="bg-crystal bgc-2"></div>
+    <div class="bg-crystal bgc-3"></div>
+    <div class="bg-crystal bgc-4"></div>
+    <div class="bg-crystal bgc-5"></div>
+    <div class="bg-crystal bgc-6"></div>
+  </div>
+  <!-- FIX: Removed stray extra </div> that was here -->
+
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="signup.html" class="nav-highlight active">Sign Up</a></li>
+    </ul>
+    <a href="cart.html" class="nav-cart">
+      <span class="cart-icon">◇</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </a>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Join the Aurora Family</h1>
+    <p>Create your account for exclusive access and deals</p>
+  </div>
+
+  <section class="signup-page">
+    <div class="auth-container">
+
+      <!-- TABS -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
+        <button class="auth-tab" id="tabLogin" onclick="switchTab('login')">Log In</button>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div class="auth-form" id="formSignup">
+        <div class="auth-perks">
+          <span>✦ Exclusive member deals</span>
+          <span>✦ Early access to new arrivals</span>
+          <span>✦ Free crystal guide on sign up</span>
+        </div>
+        <form id="signupForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="signupFirst" placeholder="Jane" required />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="signupLast" placeholder="Smith" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="signupEmail" placeholder="jane@email.com" required />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="signupPassword" placeholder="Min. 8 characters" required />
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" id="signupConfirm" placeholder="Repeat password" required />
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="signupNewsletter" checked />
+            <label for="signupNewsletter">Send me exclusive offers and crystal guides</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="signupTerms" required />
+            <label for="signupTerms">I agree to the <a href="#">Terms &amp; Conditions</a></label>
+          </div>
+          <button type="submit" class="btn-primary full-width">Create My Account ✦</button>
+          <p class="form-confirm" id="signupConfirmMsg"></p>
+        </form>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="auth-form hidden" id="formLogin">
+        <form id="loginForm">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="jane@email.com" required />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Your password" required />
+          </div>
+          <button type="submit" class="btn-primary full-width">Log In</button>
+          <p class="form-confirm" id="loginConfirmMsg"></p>
+          <p class="auth-switch">Forgot your password? <a href="#">Reset it here</a></p>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="signup.html">Sign Up</a>
+    </div>
+    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
+    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

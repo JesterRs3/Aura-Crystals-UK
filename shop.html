@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop – Aurora Crystals UK</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-scene">
+    <div class="bg-crystal bgc-1"></div>
+    <div class="bg-crystal bgc-2"></div>
+    <div class="bg-crystal bgc-3"></div>
+    <div class="bg-crystal bgc-4"></div>
+    <div class="bg-crystal bgc-5"></div>
+    <div class="bg-crystal bgc-6"></div>
+  </div>
+  <!-- FIX: Removed stray extra </div> that was here -->
+
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
+    </ul>
+    <a href="cart.html" class="nav-cart">
+      <span class="cart-icon">◇</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </a>
+  </nav>
+
+  <div class="page-hero">
+    <h1>The Collection</h1>
+    <p>Handpicked crystals — each one unique</p>
+  </div>
+
+  <section class="shop-full">
+    <div class="product-grid full" id="productGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="signup.html">Sign Up</a>
+    </div>
+    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
+    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
+  </footer>
+
+  <!-- ADD TO CART TOAST -->
+  <div class="toast" id="toast">Added to basket ✦</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
