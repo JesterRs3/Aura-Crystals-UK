@@ -3,61 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop – Aurora Crystals UK</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="bg-scene">
-    <div class="bg-crystal bgc-1"></div>
-    <div class="bg-crystal bgc-2"></div>
-    <div class="bg-crystal bgc-3"></div>
-    <div class="bg-crystal bgc-4"></div>
-    <div class="bg-crystal bgc-5"></div>
-    <div class="bg-crystal bgc-6"></div>
-  </div>
-  <!-- FIX: Removed stray extra </div> that was here -->
+  <title>Shop – Aura Crystals UK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:        #f7f2ec;
+      --parchment:    #ede4d6;
+      --blush:        #dfc9b4;
+      --muted-rose:   #c4a08e;
+      --stone:        #7d6d63;
+      --deep:         #2e2520;
+      --accent:       #a86d56;
+      --gold:         #c4973e;
+      --gold-light:   #e2bf78;
+      --wood-dark:    #3b2a1a;
+      --wood-mid:     #5c3d22;
+      --wood-light:   #8b5e35;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Jost', sans-serif;
+    }
 
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="shop.html" class="active">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
-    </ul>
-    <a href="cart.html" class="nav-cart">
-      <span class="cart-icon">◇</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </a>
-  </nav>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-  <div class="page-hero">
-    <h1>The Collection</h1>
-    <p>Handpicked crystals — each one unique</p>
-  </div>
+    body {
+      font-family: var(--font-body);
+      color: var(--deep);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-color: #f0e8dc;
+    }
 
-  <section class="shop-full">
-    <div class="product-grid full" id="productGrid"></div>
-  </section>
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        repeating-linear-gradient(102deg, transparent, transparent 2px, rgba(92,61,34,0.03) 2px, rgba(92,61,34,0.03) 4px),
+        repeating-linear-gradient(98deg, transparent, transparent 6px, rgba(59,42,26,0.025) 6px, rgba(59,42,26,0.025) 7px),
+        linear-gradient(160deg, #f5ece0 0%, #ede0cc 20%, #e8d8c2 40%, #f0e4d2 60%, #ecddd0 80%, #e6d6c4 100%);
+    }
 
-  <footer class="footer">
-    <div class="footer-links">
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="signup.html">Sign Up</a>
-    </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
-  </footer>
+    /* BG CRYSTALS */
+    .bg-scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bg-crystal { position: absolute; opacity: 0; animation: crystalFloat 20s ease-in-out infinite; }
+    .bg-crystal::before, .bg-crystal::after { content: ''; position: absolute; top: 0; left: 0; }
+    .bgc-1 { top: 4%; left: 2%; width: 180px; height: 280px; opacity: 0.12; animation-duration: 22s; }
+    .bgc-1::before { width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 160px solid rgba(148,110,190,0.5); left: 20px; }
+    .bgc-2 { top: 20%; right: 3%; width: 120px; height: 200px; opacity: 0.1; animation-duration: 18s; animation-delay: -6s; }
+    .bgc-2::before { width: 0; height: 0; border-left: 35px solid transparent; border-right: 35px solid transparent; border-bottom: 140px solid rgba(220,160,150,0.6); left: 10px; }
+    .bgc-3 { bottom: 8%; left: 40%; width: 100px; height: 160px; opacity: 0.08; animation-duration: 25s; animation-delay: -12s; }
+    .bgc-3::before { width: 0; height: 0; border-left: 28px solid transparent; border-right: 28px solid transparent; border-bottom: 110px solid rgba(200,220,240,0.7); left: 8px; }
+    .bgc-4 { bottom: 15%; right: 8%; width: 90px; height: 150px; opacity: 0.1; animation-duration: 19s; animation-delay: -4s; }
+    .bgc-4::before { width: 0; height: 0; border-left: 25px solid transparent; border-right: 25px solid transparent; border-bottom: 100px solid rgba(210,170,60,0.5); left: 8px; }
+    .bgc-5 { top: 55%; left: 1%; width: 70px; height: 120px; opacity: 0.09; animation-duration: 28s; animation-delay: -9s; }
+    .bgc-5::before { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 80px solid rgba(60,50,70,0.6); }
+    .bgc-6 { top: 6%; right: 20%; width: 60px; height: 100px; opacity: 0.07; animation-duration: 16s; animation-delay: -14s; }
+    .bgc-6::before { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 70px solid rgba(230,220,210,0.8); }
+    @keyframes crystalFloat {
+      0%   { transform: translateY(0px) rotate(0deg); }
+      25%  { transform: translateY(-14px) rotate(2deg); }
+      50%  { transform: translateY(-8px) rotate(-1deg); }
+      75%  { transform: translateY(-18px) rotate(1.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
 
-  <!-- ADD TO CART TOAST -->
-  <div class="toast" id="toast">Added to basket ✦</div>
+    /* NAVBAR */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 4rem;
+      background:
+        repeating-linear-gradient(100deg, transparent, transparent 4px, rgba(92,61,34,0.05) 4px, rgba(92,61,34,0.05) 5px),
+        linear-gradient(180deg, #3b2a1a 0%, #4a3320 60%, #3b2a1a 100%);
+      border-bottom: 3px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(30,15,5,0.4), 0 1px 0 rgba(255,200,100,0.15);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .logo-icon {
+      color: var(--gold); font-size: 1.2rem;
+      animation: spin-slow 10s linear infinite; display: inline-block;
+      filter: drop-shadow(0 0 6px rgba(196,151,62,0.6));
+    }
+    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .logo-text { font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; color: #f0dfc0; letter-spacing: 0.06em; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+    .logo-uk { font-size: 0.72rem; font-family: var(--font-body); font-weight: 300; letter-spacing: 0.18em; color: var(--gold-light); margin-left: 4px; vertical-align: super; }
+    .nav-links { display: flex; list-style: none; gap: 2.5rem; }
+    .nav-links a { font-family: var(--font-body); font-size: 0.8rem; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(240,220,190,0.75); text-decoration: none; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold-light); }
+    .nav-highlight { color: var(--gold-light) !important; border: 1px solid rgba(196,151,62,0.5); padding: 0.3rem 0.9rem; }
+    .nav-cart { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-size: 1.1rem; color: rgba(240,220,190,0.75); text-decoration: none; transition: color 0.3s; }
+    .nav-cart:hover { color: var(--gold-light); }
+    .cart-count { font-family: var(--font-body); font-size: 0.72rem; font-weight: 500; background: var(--gold); color: var(--wood-dark); width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-  <script src="script.js"></script>
-</body>
-</html>
+    /* WOOD DIVIDER */
+    .wood-divider {
+      position: relative; z-index: 1; height: 6px;
+      background: linear-gradient(90deg, var(--wood-dark) 0%, var(--wood-mid) 15%, var(--wood-light) 30%, #a07040 45%, var(--wood-light) 55%, var(--wood-mid) 70%, var(--wood-dark) 85%, var(--wood-mi
