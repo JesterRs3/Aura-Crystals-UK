@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basket – Aurora Crystals UK</title>
+  <title>Basket – Aura Crystals UK</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
@@ -20,7 +20,7 @@
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
       <span class="logo-icon">✦</span>
-      <span class="logo-text">Aurora Crystals <span class="logo-uk">UK</span></span>
+      <span class="logo-text">Aura Crystals <span class="logo-uk">UK</span></span>
     </a>
     <ul class="nav-links">
       <li><a href="shop.html">Shop</a></li>
@@ -41,23 +41,15 @@
 
   <section class="cart-page">
     <div class="cart-page-inner">
+      <div id="cartPageItems"></div>
 
-      <!-- CART ITEMS -->
-      <div id="cartPageItems">
-        <!-- Populated by script.js renderCartPage() -->
-      </div>
-
-      <!-- ORDER SUMMARY + CHECKOUT -->
       <div class="order-summary" id="orderSummary" style="display:none;">
         <h3>Order Summary</h3>
-        <div id="summaryLines">
-          <!-- Populated by script.js -->
-        </div>
+        <div id="summaryLines"></div>
         <div class="summary-row summary-total">
           <span>Total</span>
           <span id="summaryTotal">£0.00</span>
         </div>
-
         <div class="checkout-section">
           <h3>Delivery Details</h3>
           <div class="form-row">
@@ -88,17 +80,13 @@
               <input type="text" id="delivPostcode" placeholder="SW1A 1AA" />
             </div>
           </div>
-
           <div class="payment-notice">
             <p>This is a demo checkout. No real payment will be taken.</p>
             <p class="payment-sub">Real payments can be wired up via Stripe or PayPal.</p>
           </div>
-
-          <!-- FIX: Button wired to simulateCheckout() -->
           <button class="btn-primary full-width checkout-btn" onclick="simulateCheckout()">
             Complete Order ✦
           </button>
-
           <div class="payment-icons">
             <span>VISA</span>
             <span>MASTERCARD</span>
@@ -107,11 +95,9 @@
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- ORDER SUCCESS OVERLAY -->
   <div class="order-success hidden" id="orderSuccess">
     <div class="success-inner">
       <span class="success-icon">✦</span>
@@ -128,8 +114,8 @@
       <a href="contact.html">Contact</a>
       <a href="signup.html">Sign Up</a>
     </div>
-    <p>✦ Aurora Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
-    <p class="footer-small">© 2025 Aurora Crystals UK. All rights reserved.</p>
+    <p>✦ Aura Crystals UK &nbsp;·&nbsp; Handpicked with love</p>
+    <p class="footer-small">© 2025 Aura Crystals UK. All rights reserved.</p>
   </footer>
 
   <script src="script.js"></script>
