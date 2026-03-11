@@ -336,6 +336,29 @@ function initScrollReveal() {
 }
 
 // =============================================
+//  MOBILE NAV
+// =============================================
+function toggleMobileNav() {
+  const links = document.querySelector(".nav-links");
+  const btn   = document.getElementById("navHamburger");
+  if (!links || !btn) return;
+  const isOpen = links.classList.toggle("mobile-open");
+  btn.classList.toggle("open", isOpen);
+  document.body.style.overflow = isOpen ? "hidden" : "";
+}
+
+// Close mobile nav when any link is clicked
+document.addEventListener("click", function(e) {
+  if (e.target.closest(".nav-links a")) {
+    const links = document.querySelector(".nav-links");
+    const btn   = document.getElementById("navHamburger");
+    if (links) links.classList.remove("mobile-open");
+    if (btn)   btn.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+});
+
+// =============================================
 //  INIT
 // =============================================
 document.addEventListener("DOMContentLoaded", () => {

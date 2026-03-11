@@ -441,10 +441,22 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* HAMBURGER */
+    .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 1001; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--gold-light); border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
       .navbar { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-links { display: none; position: fixed; inset: 0; background: rgba(20,12,5,0.97); backdrop-filter: blur(10px); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; gap: 2.5rem; }
+      .nav-links.mobile-open { display: flex; }
+      .nav-links.mobile-open li { list-style: none; }
+      .nav-links.mobile-open a { font-size: 1.3rem; letter-spacing: 0.1em; color: rgba(240,220,190,0.85); }
+      .nav-links.mobile-open a:hover { color: var(--gold-light); }
       .crystal-hero { grid-template-columns: 1fr; min-height: auto; }
       .crystal-image-panel { height: 55vw; min-height: 260px; max-height: 420px; }
       .crystal-info-panel { padding: 2rem 1.5rem; }
@@ -482,6 +494,9 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="signup.html" class="nav-highlight">Sign Up</a></li>
     </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
     <a href="cart.html" class="nav-cart">
       <span>&#9671;</span>
       <span class="cart-count" id="cartCount">0</span>
